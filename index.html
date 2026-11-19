@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Рассчитайте стоимость услуг финансового директора Елены Кор.">
+  <title>Калькулятор услуг | Елена Кор</title>
+
+  <!-- ПРАЙС. В каждой строке указаны название, единица, цена в рублях и описание.
+       Чтобы изменить цену, замените число без пробелов и знака ₽. Используйте точку для копеек.
+       Если цена согласовывается индивидуально, укажите null вместо числа.
+       Единицы из прайса — «месяц», «проект», «обновление». -->
+  <script type="application/json" id="price-list">
+  [
+    ["Первичная диагностика финансового состояния", "проект", 45000, "Анализ ОПУ, ДДС, баланса, задолженности и ликвидности; выявление рисков, письменные выводы и план действий"],
+    ["Постановка управленческого учёта", "проект", 160000, "Методология, статьи и ЦФО, аналитики, формы отчётности, регламент закрытия; без программирования 1С"],
+    ["Сопровождение управленческого учёта", "месяц", 45000, "Проверка данных, методологические корректировки, контроль закрытия и регулярной управленческой отчётности"],
+    ["Разработка БДР, БДДС и прогнозного баланса", "проект", 110000, "Архитектура бюджетов, взаимосвязанные прогнозные формы, основные допущения, согласование бюджетной модели"],
+    ["Ведение БДР, БДДС и прогнозного баланса", "месяц", 37500, "Ежемесячная актуализация бюджетов, прогнозов и управленческих форм по предоставленным данным"],
+    ["Постановка план-факт и факторного анализа", "проект", 52500, "Формы и методика анализа отклонений, ключевые факторы выручки, затрат, маржи и прибыли"],
+    ["Ежемесячный план-факт и факторный анализ", "месяц", 30000, "Отклонения от бюджета, факторные комментарии и рекомендации по корректирующим действиям"],
+    ["Постановка казначейства и платёжного календаря", "проект", 55000, "Платёжный календарь, реестр заявок, лимиты, приоритеты платежей и правила согласования"],
+    ["Сопровождение платёжного календаря", "месяц", 32500, "Обновление прогноза поступлений и платежей, отслеживание кассовых разрывов"],
+    ["Постановка системы управления ликвидностью", "проект", 57500, "Методика прогноза денежных потоков, анализ потребности в оборотном капитале и источниках покрытия разрывов"],
+    ["Мониторинг ликвидности", "месяц", 37500, "Скользящий прогноз денежных средств, анализ рисков и рекомендации по финансированию"],
+    ["Анализ дебиторской и кредиторской задолженности", "проект", 32500, "Структура, просрочка, концентрация, оборачиваемость и план погашения"],
+    ["Мониторинг дебиторской и кредиторской задолженности", "месяц", 22500, "Ежемесячные реестры и показатели, контроль просрочки и динамики оборотного капитала"],
+    ["Финансовая модель действующего бизнеса", "проект", 140000, "Прогноз ОПУ, ДДС, баланса, допущения, сценарии и управленческие KPI"],
+    ["Актуализация финансовой модели бизнеса", "обновление", 32500, "Обновление исходных данных и прогноза, проверка ключевых изменений и выводы"],
+    ["Финансовая оценка налоговых альтернатив", "проект", 50000, "Сценарные расчёты налоговой нагрузки совместно с бухгалтером/налоговым консультантом; без налогового заключения"],
+    ["Постановка методологии финансовой функции", "проект", 70000, "Распределение ответственности, финансовые регламенты, контрольные процедуры и KPI"],
+    ["Методологическая координация финансовой функции", "месяц", 42500, "Постановка задач сотрудникам, контроль качества данных, встречи, рекомендации и регламенты"],
+    ["Модель себестоимости и рентабельности", "проект", 115000, "Статьи затрат, базы распределения, калькуляция продукции/заказов и аналитика маржинальности"],
+    ["Мониторинг себестоимости и рентабельности", "месяц", 40000, "Анализ отклонений затрат, себестоимости, маржи продукции и заказов"],
+    ["Пакет «Финансовый контроль» (до 12 часов)", "месяц", 60000, "KPI, ликвидность, управленческий отчёт, встреча с собственником; не включает постановку учёта"],
+    ["Пакет «Финансовый директор» (до 25 часов)", "месяц", 110000, "БДР/БДДС, план-факт, денежные потоки, задолженность и координация финансовых вопросов"],
+    ["Пакет «Финансовое управление и развитие» (до 40 часов)", "месяц", 170000, "Регулярное финансовое управление, сценарии, рентабельность, долг, управленческие совещания"]
+  ]
+  </script>
+
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172b33;
+      --muted: #4b626a;
+      --line: #d5e2e2;
+      --paper: #fff;
+      --canvas: #f1f6f6;
+      --teal: #146b60;
+      --teal-dark: #0e534b;
+      --mint: #e7f4ef;
+      --navy: #173b42;
+      --radius: 1rem;
+      font: 100%/1.5 'Segoe UI', system-ui, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    body { margin: 0; color: var(--ink); background: var(--canvas); }
+    h1, h2, h3, p, dl, dd, ol, ul { margin: 0; }
+    h1, h2, h3 { line-height: 1.2; }
+    a { color: var(--teal-dark); text-underline-offset: .2em; }
+    a:hover { text-decoration-thickness: .13em; }
+    button, input { font: inherit; }
+    button, summary, input[type="checkbox"], input[type="radio"] { cursor: pointer; }
+    :focus-visible { outline: .15rem solid #147f70; outline-offset: .2rem; }
+    :disabled { cursor: default; }
+
+    .wrap { width: min(100% - 1.5rem, 75rem); margin-inline: auto; }
+    .masthead { background: var(--paper); border-bottom: 1px solid var(--line); }
+    .masthead .wrap { display: flex; align-items: center; gap: .75rem; padding-block: .85rem; }
+    .monogram {
+      display: grid;
+      place-items: center;
+      width: 2.5rem;
+      aspect-ratio: 1;
+      border-radius: .65rem;
+      background: var(--mint);
+      color: var(--teal-dark);
+      font-weight: 700;
+    }
+    .identity { display: grid; line-height: 1.3; }
+    .identity small { color: var(--muted); font-size: .875rem; }
+    .hero {
+      padding-block: clamp(1.6rem, 5vw, 3.4rem);
+      background: linear-gradient(115deg, #173b42, #205457);
+      color: #fff;
+    }
+    h1 { font-size: clamp(1.85rem, 5.5vw, 3.2rem); letter-spacing: -.035em; }
+    .hero p { max-width: 46ch; margin-top: .65rem; color: #dcedeb; }
+
+    .layout { display: grid; gap: 1rem; align-items: start; padding-block: 1rem 1.25rem; }
+    .controls { display: grid; gap: 1rem; min-width: 0; }
+    .card {
+      min-width: 0;
+      padding: clamp(1rem, 2.6vw, 1.55rem);
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+    .card h2 { font-size: 1.25rem; }
+    .hint, .steps, .client-name { color: var(--muted); }
+    .hint { margin-top: .4rem; font-size: .9rem; }
+    .steps { margin-top: .65rem; padding-left: 1.3rem; }
+    .steps li + li { margin-top: .25rem; }
+    .field { display: grid; gap: .35rem; margin-top: .9rem; }
+    .field label, legend { font-weight: 650; }
+    input[type="text"], input[type="number"], textarea {
+      width: 100%;
+      min-height: 2.75rem;
+      padding: .45rem .65rem;
+      border: 1px solid #aebfc1;
+      border-radius: .5rem;
+      background: var(--paper);
+      color: var(--ink);
+    }
+    #client { max-width: 30rem; }
+    fieldset { margin: 1rem 0 0; padding: 0; border: 0; }
+    legend { padding: 0; margin-bottom: .4rem; }
+    .choices { display: flex; flex-wrap: wrap; gap: .4rem; }
+    .choice {
+      display: flex;
+      align-items: center;
+      gap: .45rem;
+      min-height: 2.75rem;
+      padding: .4rem .65rem;
+      border: 1px solid var(--line);
+      border-radius: .5rem;
+      cursor: pointer;
+    }
+    .choice:has(:checked) { border-color: #81b4a8; background: var(--mint); }
+    input[type="checkbox"], input[type="radio"] {
+      flex: none;
+      width: 1.15rem;
+      height: 1.15rem;
+      margin: 0;
+      accent-color: var(--teal);
+    }
+
+    .catalog-group { margin-top: 1.1rem; }
+    .catalog-group h3 { padding: .6rem .7rem; background: var(--canvas); border-radius: .45rem; font-size: 1rem; }
+    .service { padding: .15rem .45rem .55rem; border-bottom: 1px solid var(--line); }
+    .service:has(:checked) { background: var(--mint); }
+    .service-label {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: baseline;
+      column-gap: .65rem;
+      min-height: 2.75rem;
+      padding: .6rem .25rem .25rem;
+      cursor: pointer;
+    }
+    .service-label input { align-self: start; margin-top: .2rem; }
+    .service-name { font-weight: 650; }
+    .service-price { grid-column: 2; color: var(--teal-dark); font-size: .9rem; font-variant-numeric: tabular-nums; }
+    .service-extra { margin-left: 2.05rem; }
+    .description { color: var(--muted); font-size: .875rem; }
+    .description summary { width: fit-content; padding: .18rem 0; }
+    .description p { margin-block: .25rem; }
+    .quantity { display: flex; align-items: center; flex-wrap: wrap; gap: .45rem; margin-top: .5rem; }
+    .quantity label { font-size: .9rem; }
+    .quantity input { width: 5.1rem; }
+
+    #calculation { scroll-margin-top: 1rem; }
+    .client-name { margin-top: .4rem; overflow-wrap: anywhere; }
+    .grand-total {
+      display: grid;
+      gap: .15rem;
+      padding: .85rem 1rem;
+      margin-top: .75rem;
+      border-radius: .7rem;
+      background: var(--navy);
+      color: #fff;
+    }
+    .grand-total span { color: #dbeeea; font-size: .9rem; }
+    .grand-total strong { font-size: clamp(1.7rem, 4vw, 2.25rem); line-height: 1.16; letter-spacing: -.035em; overflow-wrap: anywhere; }
+    .amount { font-variant-numeric: tabular-nums; }
+    .notice { margin-top: .75rem; padding: .55rem .65rem; border-radius: .45rem; background: #faf1df; color: #644915; font-size: .9rem; }
+    .empty { margin-top: .75rem; color: var(--muted); }
+    .line-items { padding-inline-start: 0; margin-top: .8rem; list-style: none; }
+    .line-item, .adjustment {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) fit-content(48%);
+      align-items: baseline;
+      gap: .6rem;
+      padding-block: .5rem;
+      border-bottom: 1px solid var(--line);
+      font-size: .9rem;
+      overflow-wrap: anywhere;
+    }
+    .line-item small { display: block; color: var(--muted); font-size: .875rem; }
+    .line-item strong, .adjustment dd { text-align: right; }
+    .adjustment dd { font-weight: 650; }
+    .adjustment:first-child { margin-top: .15rem; }
+    .actions { display: grid; gap: .55rem; margin-top: 1rem; }
+    .button {
+      display: grid;
+      place-items: center;
+      min-height: 2.75rem;
+      padding: .55rem .75rem;
+      border: 1px solid var(--teal);
+      border-radius: .55rem;
+      background: var(--teal);
+      color: #fff;
+      text-align: center;
+      text-decoration: none;
+      font-weight: 650;
+      line-height: 1.25;
+    }
+    .button:hover { background: var(--teal-dark); }
+    .button.secondary { background: var(--paper); color: var(--teal-dark); border-color: #88a9a5; }
+    .button.secondary:hover { background: var(--mint); }
+    .button:disabled { opacity: .55; }
+    .copy-status { min-height: 1.3rem; color: var(--teal-dark); font-size: .875rem; }
+    #manual-copy { min-height: 8rem; resize: vertical; }
+    .contacts { border-top: 1px solid var(--line); background: var(--paper); }
+    .contacts .wrap { display: flex; flex-wrap: wrap; gap: .4rem 1.4rem; padding-block: 1rem; }
+    .contacts strong { flex-basis: 100%; }
+    .contacts a { white-space: nowrap; }
+    .print-only { display: none; }
+
+    .mobile-total {
+      position: fixed;
+      z-index: 1;
+      inset: auto 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .55rem;
+      padding: .65rem max(.75rem, env(safe-area-inset-right)) calc(.65rem + env(safe-area-inset-bottom)) max(.75rem, env(safe-area-inset-left));
+      background: var(--paper);
+      border-top: 1px solid var(--line);
+      box-shadow: 0 -.25rem 1.25rem #173b4214;
+    }
+    .mobile-total div { min-width: 0; }
+    .mobile-total span { display: block; color: var(--muted); font-size: .875rem; }
+    .mobile-total strong { display: block; font-size: clamp(1rem, 4.9vw, 1.35rem); line-height: 1.2; overflow-wrap: anywhere; }
+    .mobile-total .button { flex-shrink: 0; font-size: .875rem; }
+
+    @media (max-width: 59.99rem) {
+      body { padding-bottom: calc(5.75rem + env(safe-area-inset-bottom)); }
+      html { scroll-padding-bottom: calc(5.75rem + env(safe-area-inset-bottom)); }
+    }
+    @media screen and (max-width: 39.99rem) {
+      .service-label input, .choice input { width: 1.5rem; height: 1.5rem; }
+      .service-label input { grid-row: span 2; align-self: center; margin-top: 0; }
+      .service-extra { margin-left: 2.4rem; }
+      .description summary { min-height: 2.75rem; padding-block: .7rem; }
+    }
+    @media (min-width: 40rem) {
+      .wrap { width: min(100% - 3rem, 75rem); }
+      .service-label { grid-template-columns: auto minmax(0, 1fr) auto; }
+      .service-price { grid-column: auto; white-space: nowrap; }
+    }
+    @media (min-width: 60rem) {
+      .layout { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 1.4rem; padding-block: 1.4rem 2rem; }
+      #calculation { position: sticky; top: 1rem; max-height: calc(100vh - 2rem); overflow: auto; }
+      .mobile-total { display: none; }
+    }
+    @page { margin: 14mm; }
+    @media print {
+      body { padding: 0; background: #fff; color: #000; font-size: 11pt; }
+      .masthead, .hero, .controls, .actions, .mobile-total, noscript { display: none; }
+      .wrap { width: 100%; }
+      .layout { display: block; padding: 0; }
+      #calculation { position: static; max-height: none; overflow: visible; padding: 0; border: 0; }
+      #calculation h2 { font-size: 19pt; margin-bottom: .35rem; }
+      .print-only { display: block; margin-bottom: .75rem; }
+      .grand-total { background: transparent; color: #000; border: 1px solid #999; break-inside: avoid; }
+      .grand-total span, .client-name, .line-item small { color: #333; }
+      .grand-total strong { font-size: 18pt; }
+      .line-item, .adjustment { break-inside: avoid; }
+      .contacts { margin-top: 1rem; break-inside: avoid; }
+      .contacts a { color: #000; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="masthead">
+    <div class="wrap">
+      <span class="monogram" aria-hidden="true">ЕК</span>
+      <div class="identity"><strong>Елена Кор</strong><small>Финансовый директор и консультант</small></div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="wrap">
+      <h1>Калькулятор стоимости услуг</h1>
+      <p>Рассчитайте стоимость финансового сопровождения и разовых проектов для вашего бизнеса.</p>
+    </div>
+  </section>
+
+  <noscript><p class="wrap card">Включите JavaScript в браузере, чтобы рассчитать стоимость услуг.</p></noscript>
+  <main class="wrap layout">
+    <div class="controls">
+      <section class="card" aria-labelledby="instructions-title">
+        <h2 id="instructions-title">Как рассчитать стоимость</h2>
+        <ol class="steps">
+          <li>Укажите, как к вам обращаться, и выберите срок.</li>
+          <li>Отметьте услуги и укажите количество для каждой.</li>
+          <li>Проверьте итог и скопируйте расчёт, чтобы отправить его Елене, или сохраните в PDF.</li>
+        </ol>
+        <div class="field">
+          <label for="client">Как к вам обращаться</label>
+          <input id="client" type="text" autocomplete="name" maxlength="120" placeholder="Ваше имя">
+        </div>
+        <fieldset>
+          <legend>Срок выполнения</legend>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="timing" value="normal" checked> Обычный срок</label>
+            <label class="choice"><input type="radio" name="timing" value="urgent" id="urgent"> Срочно (+30%)</label>
+          </div>
+        </fieldset>
+      </section>
+
+      <section class="card" aria-labelledby="services-title">
+        <h2 id="services-title">Услуги</h2>
+        <p class="hint">От трёх разных позиций действует скидка 5%. Укажите от шести месяцев по одному из пакетов, если оплачиваете их сразу. Тогда скидка на весь расчёт составит 10%. Применяется большая скидка.</p>
+        <div id="catalog"></div>
+      </section>
+    </div>
+
+    <aside class="card" id="calculation" aria-labelledby="calculation-title" tabindex="-1">
+      <p class="print-only">Елена Кор · Финансовый директор и консультант</p>
+      <h2 id="calculation-title">Ваш расчёт</h2>
+      <p class="client-name" id="client-display" hidden></p>
+      <div class="grand-total" aria-live="polite" aria-atomic="true">
+        <span id="total-label">Итого</span>
+        <strong class="amount" id="total">0 ₽</strong>
+      </div>
+      <p class="empty" id="empty">Отметьте услуги, чтобы увидеть расчёт.</p>
+      <div id="breakdown" hidden>
+        <p class="notice" id="price-notice" hidden>Цену отдельных услуг нужно уточнить. Суммы рассчитаны по позициям с указанной ценой.</p>
+        <ul class="line-items" id="items" aria-label="Выбранные услуги"></ul>
+        <dl id="adjustments"></dl>
+      </div>
+      <div class="actions">
+        <button class="button" id="copy" type="button" disabled>Скопировать расчёт</button>
+        <button class="button secondary" id="print" type="button" disabled>Распечатать или сохранить PDF</button>
+        <p class="copy-status" id="copy-status" role="status"></p>
+        <textarea id="manual-copy" aria-label="Текст расчёта для копирования" readonly hidden></textarea>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="contacts">
+    <div class="wrap">
+      <strong>Связаться с Еленой Кор</strong>
+      <a href="tel:+79152889732">+7 915 288-97-32</a>
+      <a href="https://t.me/ElenaKor357">Telegram @ElenaKor357</a>
+    </div>
+  </footer>
+
+  <div class="mobile-total">
+    <div><span id="mobile-label">Итого</span><strong class="amount" id="mobile-amount">0 ₽</strong></div>
+    <a class="button" href="#calculation">К расчёту</a>
+  </div>
+
+  <template id="service-template">
+    <div class="service">
+      <label class="service-label">
+        <input type="checkbox">
+        <span class="service-name"></span>
+        <span class="service-price"></span>
+      </label>
+      <div class="service-extra">
+        <details class="description"><summary>Что входит</summary><p></p></details>
+        <div class="quantity" hidden>
+          <label></label>
+          <input type="number" min="1" max="999999" step="1" value="1" inputmode="numeric" disabled>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    'use strict';
+
+    const rules = {
+      urgentRate: 30,
+      volumeRate: 5,
+      volumeMinimum: 3,
+      packageRate: 10,
+      packageMonths: 6,
+      taxRate: 6
+    };
+    const unitInfo = {
+      'проект': { group: 'Разовые проекты', price: 'проект', quantity: 'Количество проектов', forms: ['проект', 'проекта', 'проектов'] },
+      'месяц': { group: 'Ежемесячные услуги', price: 'месяц', quantity: 'Количество месяцев', forms: ['месяц', 'месяца', 'месяцев'] },
+      'обновление': { group: 'Обновление финансовой модели', price: 'обновление', quantity: 'Количество обновлений', forms: ['обновление', 'обновления', 'обновлений'] }
+    };
+    const find = (id) => document.getElementById(id);
+    const services = JSON.parse(find('price-list').textContent).map(([name, unit, price, description]) => ({
+      name, unit, price: typeof price === 'number' && price >= 0 ? Math.round(price * 100) : null, description
+    }));
+    const client = find('client');
+    const urgent = find('urgent');
+    const itemList = find('items');
+    const adjustments = find('adjustments');
+    const copyButton = find('copy');
+    const printButton = find('print');
+    const manualCopy = find('manual-copy');
+    const copyStatus = find('copy-status');
+    const integerFormat = new Intl.NumberFormat('ru-RU');
+    const decimalFormat = new Intl.NumberFormat('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const plural = new Intl.PluralRules('ru-RU');
+
+    function money(kopecks) {
+      const formatter = kopecks % 100 === 0 ? integerFormat : decimalFormat;
+      return formatter.format(kopecks / 100) + '\u00a0₽';
+    }
+
+    function quantityText(line) {
+      const forms = unitInfo[line.unit].forms;
+      const category = plural.select(line.quantity);
+      const unit = category === 'one' ? forms[0] : category === 'few' ? forms[1] : forms[2];
+      return integerFormat.format(line.quantity) + ' ' + unit;
+    }
+
+    function readQuantity(input) {
+      const quantity = Math.floor(input.valueAsNumber);
+      return Math.min(Number(input.max), Math.max(1, quantity || 1));
+    }
+
+    function buildCatalog() {
+      const catalog = find('catalog');
+      const template = find('service-template');
+      for (const [unit, labels] of Object.entries(unitInfo)) {
+        const section = document.createElement('section');
+        section.className = 'catalog-group';
+        const title = document.createElement('h3');
+        title.textContent = labels.group;
+        section.append(title);
+
+        for (const [index, service] of services.entries()) {
+          if (service.unit !== unit) continue;
+          const row = template.content.cloneNode(true);
+          const checkbox = row.querySelector('input[type="checkbox"]');
+          const quantity = row.querySelector('.quantity');
+          const field = quantity.querySelector('input');
+          const label = quantity.querySelector('label');
+          const name = row.querySelector('.service-name');
+          name.id = 'service-name-' + index;
+          name.textContent = service.name;
+          checkbox.setAttribute('aria-labelledby', name.id);
+          field.id = 'quantity-' + index;
+          label.id = 'quantity-label-' + index;
+          label.htmlFor = field.id;
+          label.textContent = labels.quantity;
+          field.setAttribute('aria-labelledby', label.id + ' ' + name.id);
+          row.querySelector('.service-price').textContent =
+            service.price === null ? 'Цену уточнить' : money(service.price) + ' / ' + labels.price;
+          row.querySelector('.description p').textContent = service.description;
+          row.querySelector('.description').hidden = !service.description;
+          service.checkbox = checkbox;
+          service.quantity = field;
+          checkbox.addEventListener('change', () => {
+            quantity.hidden = !checkbox.checked;
+            field.disabled = !checkbox.checked;
+            render();
+          });
+          field.addEventListener('input', render);
+          field.addEventListener('change', () => {
+            field.value = readQuantity(field);
+            render();
+          });
+          section.append(row);
+        }
+        catalog.append(section);
+      }
+    }
+
+    function calculate() {
+      const lines = services.filter((service) => service.checkbox.checked).map((service) => {
+        const quantity = readQuantity(service.quantity);
+        return { ...service, quantity, amount: service.price === null ? null : service.price * quantity };
+      });
+      const subtotal = lines.reduce((sum, line) => sum + (line.amount ?? 0), 0);
+      const volumeRate = lines.length >= rules.volumeMinimum ? rules.volumeRate : 0;
+      const qualifiesForPackage = lines.some((line) =>
+        line.unit === 'месяц' && line.name.startsWith('Пакет «') && line.quantity >= rules.packageMonths
+      );
+      const packageRate = qualifiesForPackage ? rules.packageRate : 0;
+      const discountRate = Math.max(volumeRate, packageRate);
+      const discount = Math.round(subtotal * discountRate / 100);
+      const urgentRate = urgent.checked ? rules.urgentRate : 0;
+      const surcharge = Math.round((subtotal - discount) * urgentRate / 100);
+      const beforeTax = subtotal - discount + surcharge;
+      const taxSurcharge = Math.round(beforeTax * rules.taxRate / 100);
+      const total = beforeTax + taxSurcharge;
+      return {
+        name: client.value.trim().replace(/\s+/g, ' '),
+        lines, subtotal, discountRate, discount, urgentRate, surcharge, taxSurcharge, total,
+        packageApplied: packageRate > 0 && packageRate >= volumeRate,
+        needsQuote: lines.some((line) => line.amount === null),
+        hasPrice: lines.some((line) => line.amount !== null)
+      };
+    }
+
+    function breakdownRows(result) {
+      let discountLabel = 'Скидка';
+      if (result.discountRate > 0) {
+        const reason = result.packageApplied ? 'за предоплату' : 'за объём';
+        discountLabel += ' ' + reason + ' ' + result.discountRate + '%';
+      }
+      const chargeLabel = result.urgentRate ? 'Срочность +' + result.urgentRate + '%' : 'Срочность';
+      return [
+        ['Сумма услуг', money(result.subtotal)],
+        [discountLabel, result.discount ? '−' + money(result.discount) : money(0)],
+        [chargeLabel, result.surcharge ? '+' + money(result.surcharge) : money(0)],
+        ['Надбавка на НПД +' + rules.taxRate + '%', result.taxSurcharge ? '+' + money(result.taxSurcharge) : money(0)]
+      ];
+    }
+
+    function totalText(result) {
+      return result.needsQuote && !result.hasPrice ? 'Уточнить' : money(result.total);
+    }
+
+    function totalLabel(result) {
+      return result.needsQuote && result.hasPrice ? 'Итого по известным ценам' : 'Итого';
+    }
+
+    function render() {
+      const result = calculate();
+      find('client-display').textContent = result.name ? 'Клиент · ' + result.name : '';
+      find('client-display').hidden = !result.name;
+      find('total').textContent = totalText(result);
+      find('mobile-amount').textContent = totalText(result);
+      find('total-label').textContent = totalLabel(result);
+      find('mobile-label').textContent = totalLabel(result);
+      find('breakdown').hidden = result.lines.length === 0;
+      find('empty').hidden = result.lines.length > 0;
+      find('price-notice').hidden = !result.needsQuote;
+      copyButton.disabled = result.lines.length === 0;
+      printButton.disabled = result.lines.length === 0;
+      manualCopy.hidden = true;
+      copyStatus.textContent = '';
+
+      itemList.replaceChildren(...result.lines.map((line) => {
+        const item = document.createElement('li');
+        item.className = 'line-item';
+        const description = document.createElement('span');
+        description.textContent = line.name;
+        const quantity = document.createElement('small');
+        quantity.textContent = line.price === null ? quantityText(line) : quantityText(line) + ' × ' + money(line.price);
+        description.append(quantity);
+        const amount = document.createElement('strong');
+        amount.className = 'amount';
+        amount.textContent = line.amount === null ? 'Уточнить' : money(line.amount);
+        item.append(description, amount);
+        return item;
+      }));
+      adjustments.replaceChildren(...breakdownRows(result).map(([label, value]) => {
+        const row = document.createElement('div');
+        row.className = 'adjustment';
+        const term = document.createElement('dt');
+        term.textContent = label;
+        const amount = document.createElement('dd');
+        amount.className = 'amount';
+        amount.textContent = result.hasPrice ? value : '—';
+        row.append(term, amount);
+        return row;
+      }));
+    }
+
+    function messageText(result) {
+      const message = ['Расчёт услуг · Елена Кор'];
+      if (result.name) message.push('Клиент — ' + result.name);
+      message.push('');
+      for (const line of result.lines) {
+        const quantity = quantityText(line);
+        const amount = line.amount === null ? 'цену уточнить' : money(line.amount);
+        const rate = line.price === null ? '' : ' × ' + money(line.price);
+        message.push('• ' + line.name + ' (' + quantity + rate + ') — ' + amount);
+      }
+      message.push('');
+      for (const [label, amount] of breakdownRows(result)) {
+        message.push(label + ' — ' + (result.hasPrice ? amount : 'уточнить'));
+      }
+      message.push(totalLabel(result) + ' — ' + totalText(result));
+      if (result.needsQuote) message.push('Цену отдельных услуг нужно уточнить.');
+      return message.join('\n');
+    }
+
+    copyButton.addEventListener('click', async () => {
+      const message = messageText(calculate());
+      if (navigator.clipboard?.writeText) {
+        try {
+          await navigator.clipboard.writeText(message);
+          copyStatus.textContent = 'Расчёт скопирован.';
+          return;
+        } catch {
+          // При открытии локального файла браузер может ограничить доступ к буферу.
+        }
+      }
+      manualCopy.value = message;
+      manualCopy.hidden = false;
+      manualCopy.focus();
+      manualCopy.select();
+      try {
+        if (document.execCommand('copy')) {
+          manualCopy.hidden = true;
+          copyButton.focus();
+          copyStatus.textContent = 'Расчёт скопирован.';
+          return;
+        }
+      } catch {
+        // Оставляем выделенный текст для ручного копирования.
+      }
+      copyStatus.textContent = 'Скопируйте выделенный текст расчёта.';
+    });
+
+    printButton.addEventListener('click', () => window.print());
+    client.addEventListener('input', render);
+    document.querySelectorAll('[name="timing"]').forEach((option) => option.addEventListener('change', render));
+    buildCatalog();
+    render();
+  </script>
+</body>
+</html>
